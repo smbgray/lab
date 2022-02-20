@@ -1,0 +1,15 @@
+---
+- name: Pull grafana image
+  containers.podman.podman_image:
+    name: grafana/grafana-oss:8.3.6
+  become: yes
+
+- name: install grafana
+  containers.podman.podman_container:
+    name: grafana
+    image: grafana/grafana-oss:8.3.6
+    state: started
+    pod: lab
+    # ports:
+    #   - "3000:3000"
+  become: yes

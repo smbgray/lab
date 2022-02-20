@@ -1,0 +1,22 @@
+---
+# defaults file for lab
+base_packages:
+ - bpftrace
+ - podman
+ - bcc-tools
+ - libselinux-python
+ 
+images:
+ - grafana/grafana-oss:8.3.6
+ - grafana/loki:main
+
+loki:
+  dir: /opt/loki
+  http_port: 3010
+  gcrp_port: 9010
+
+nginx:
+  dir: /opt/nginx
+
+promtail:
+  dir: /opt/promtail

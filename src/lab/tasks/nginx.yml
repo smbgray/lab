@@ -1,0 +1,29 @@
+---
+- name: ensure nginx image downladed
+  containers.podman.podman_image:
+    name: nginx:stable
+  become: yes
+
+- name: create nginx config folder
+  file:
+    path: "{{ nginx.dir }}/conf"
+    recurse: True
+    state: directory
+  become: yes
+
+- name: copy nginx config
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx.dir }}/conf/nginx.conf"
+    mode: 0644
+  become: yes
+
+- name: start nginx container
+  containers.podman.podman_container:
+    name: nginx
+    image: nginx:stable
+    state: started
+    pod: lab
+    volume:
+      - "{{ nginx.dir }}/conf/nginx.conf:/etc/nginx/nginx.conf"
+  become: yes

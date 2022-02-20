@@ -1,0 +1,9 @@
+---
+- hosts: all
+  
+  tasks:
+    - name: Istall lab
+      include_role:
+        name: lab
+      
+  

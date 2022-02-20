@@ -1,0 +1,32 @@
+---
+- name: Pull promtail image
+  containers.podman.podman_image:
+    name: grafana/promtail:main
+  become: yes
+
+- name: create promtail directory
+  file:
+    path: '{{ promtail.dir }}'
+    state: directory
+    mode: u=rwx,g=rx,o=,g+s
+  become: yes
+
+- name: create promtail config
+  template:
+    src: promtail-config.yaml
+    dest: '{{ promtail.dir }}/config.yml'
+  become: yes
+
+- name: install promtail
+  containers.podman.podman_container:
+    name: promtail
+    image: grafana/promtail:main
+    state: started
+    command: -config.file=/etc/promtail/config.yml
+    volume:
+      - /opt/promtail/config.yml:/etc/promtail/config.yml
+    pod: lab
+    # ports:
+    #   - "3010:3010"
+    #   - "9010:9010"
+  become: yes

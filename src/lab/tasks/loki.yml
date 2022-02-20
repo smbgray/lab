@@ -1,0 +1,32 @@
+---
+- name: Pull loki image
+  containers.podman.podman_image:
+    name: grafana/loki:main
+  become: yes
+
+- name: create loki directory
+  file:
+    path: '{{ loki.dir }}'
+    mode: u=rwx,g=rx,o=,g+s
+    state: directory
+  become: yes
+
+- name: create loki config
+  template:
+    src: loki-config.yaml
+    dest: '{{ loki.dir }}/loki-config.yml'
+  become: yes
+
+- name: install loki
+  containers.podman.podman_container:
+    name: loki
+    image: grafana/loki:main
+    state: started
+    command: -config.file=/mnt/config/loki-config.yml
+    volume:
+      - /opt/loki:/mnt/config
+    pod: lab
+    # ports:
+    #   - "3010:3010"
+    #   - "9010:9010"
+  become: yes
